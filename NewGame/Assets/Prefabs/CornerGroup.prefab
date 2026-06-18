@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6061531696699561141}
   - component: {fileID: 7850367406970860181}
   m_Layer: 0
-  m_Name: Wall_st (4)
+  m_Name: Wall_st_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -229,7 +229,7 @@ GameObject:
   - component: {fileID: 2671081570810769432}
   - component: {fileID: 6400762900059617771}
   m_Layer: 0
-  m_Name: Wall_st (7)
+  m_Name: Wall_st_04
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -350,7 +350,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.5, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 1, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2910942068354921930}
@@ -375,7 +375,7 @@ GameObject:
   - component: {fileID: 2312791547678263403}
   - component: {fileID: 3008113273559365750}
   m_Layer: 0
-  m_Name: Wall_Corner (2)
+  m_Name: Wall_Corner_02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -483,7 +483,7 @@ GameObject:
   - component: {fileID: 6851592263614047594}
   - component: {fileID: 3713911765336886837}
   m_Layer: 0
-  m_Name: Wall_Corner (1)
+  m_Name: Wall_Corner_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -591,7 +591,7 @@ GameObject:
   - component: {fileID: 779156712384906452}
   - component: {fileID: 2473063663227297408}
   m_Layer: 0
-  m_Name: Wall_st (6)
+  m_Name: Wall_st_03
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -699,7 +699,7 @@ GameObject:
   - component: {fileID: 1525278394589141425}
   - component: {fileID: 7166469685524360146}
   m_Layer: 0
-  m_Name: Wall_st (5)
+  m_Name: Wall_st_02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

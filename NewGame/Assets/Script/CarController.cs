@@ -1,61 +1,115 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class CarController : MonoBehaviour
 {
-    [SerializeField] float moveSpeed = 20f;
+    [Header("입력")]
+    [SerializeField] InputHandler input;
+
+    [Header("주행")]
+    [SerializeField] float maxForwardSpeed = 40f;
+    [SerializeField] float maxReverseSpeed = 15f;
+    [SerializeField] float acceleration = 25f;
+    [SerializeField] float brakePower = 40f;
+
+    [Header("회전")]
     [SerializeField] float turnSpeed = 120f;
+    [SerializeField] float turnSpeedAtHighSpeed = 70f;
 
     Rigidbody rb;
 
-    float moveInput;
-    float turnInput;
+    float currentSpeed;
 
-    private void Awake()
+    void Awake()
     {
         rb = GetComponent<Rigidbody>();
+
+        // 같은 오브젝트에서 자동으로 찾기
+        if (input == null)
+            input = GetComponent<InputHandler>();
+
+        rb.centerOfMass = new Vector3(0, -0.5f, 0);
+        rb.linearDamping = 0f;
+        rb.angularDamping = 3f;
     }
 
-    private void Update()
+    void FixedUpdate()
     {
-        moveInput = 0;
-        turnInput = 0;
+        Move();
+        Turn();
+    }
 
-        if (Keyboard.current == null)
+    void Move()
+    {
+        // 브레이크
+        if (input.BrakeInput)
+        {
+            currentSpeed = Mathf.MoveTowards(
+                currentSpeed,
+                0f,
+                brakePower * Time.fixedDeltaTime);
+        }
+        else
+        {
+            // 전진
+            if (input.MoveInput > 0)
+            {
+                currentSpeed += acceleration * Time.fixedDeltaTime;
+            }
+            // 후진
+            else if (input.MoveInput < 0)
+            {
+                currentSpeed -= acceleration * Time.fixedDeltaTime;
+            }
+            // 입력 없음
+            else
+            {
+                currentSpeed = Mathf.MoveTowards(
+                    currentSpeed,
+                    0f,
+                    brakePower * 0.3f * Time.fixedDeltaTime);
+            }
+        }
+
+        currentSpeed = Mathf.Clamp(
+            currentSpeed,
+            -maxReverseSpeed,
+            maxForwardSpeed);
+
+        Vector3 velocity = transform.forward * currentSpeed;
+        velocity.y = rb.linearVelocity.y;
+
+        rb.linearVelocity = velocity;
+    }
+
+    void Turn()
+    {
+        if (Mathf.Abs(currentSpeed) < 0.1f)
             return;
 
-        if (Keyboard.current.wKey.isPressed)
-            moveInput = 1;
+        float t = Mathf.InverseLerp(
+            0,
+            maxForwardSpeed,
+            Mathf.Abs(currentSpeed));
 
-        if (Keyboard.current.sKey.isPressed)
-            moveInput = -1;
+        float steer = Mathf.Lerp(
+            turnSpeed,
+            turnSpeedAtHighSpeed,
+            t);
 
-        if (Keyboard.current.aKey.isPressed)
-            turnInput = -1;
+        // 후진 시 조향 반전
+        float direction = currentSpeed >= 0 ? 1f : -1f;
 
-        if (Keyboard.current.dKey.isPressed)
-            turnInput = 1;
+        rb.MoveRotation(
+            rb.rotation *
+            Quaternion.Euler(
+                0,
+                input.SteerInput * steer * direction * Time.fixedDeltaTime,
+                0));
     }
 
-    private void FixedUpdate()
+    void OnCollisionEnter(Collision collision)
     {
-        Vector3 move =
-            transform.forward *
-            moveInput *
-            moveSpeed *
-            Time.fixedDeltaTime;
-
-        rb.MovePosition(rb.position + move);
-
-        if (Mathf.Abs(moveInput) > 0.1f)
-        {
-            Quaternion turn =
-                Quaternion.Euler(
-                    0,
-                    turnInput * turnSpeed * Time.fixedDeltaTime,
-                    0);
-
-            rb.MoveRotation(rb.rotation * turn);
-        }
+        // 벽에 부딪히면 속도 감소
+        currentSpeed *= 0.4f;
     }
 }
